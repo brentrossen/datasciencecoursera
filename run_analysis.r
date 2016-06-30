@@ -1,4 +1,5 @@
 library(dplyr)
+library(tidyr)
 
 # Download and extract the data
 
@@ -23,9 +24,6 @@ activity_labels <- activity_labels %>% rename(label_index = V1, activity = V2)
 readSubject <- function(filePath, dataset){
     subject <- read.table(filePath) %>% tbl_df
     colnames(subject) <- "subject"
-    ### Add column dataset to distinguish test and train datasets
-    subject$dataset <- dataset
-    subject$dataset <- as.factor(subject$dataset)
     subject
 }
 
@@ -41,7 +39,7 @@ readX <- function(filePath){
     x
 }
 
-## Read and format y
+## Read and format y_test/train
 readY <- function(filePath){
     y <- read.table(filePath) %>% tbl_df
     y <- y %>% rename(label_index = V1)
@@ -72,14 +70,17 @@ data <- rbind(test, train)
 # Calculate the mean for the "wide form" data, this matches the
 ## assignment details
 
+mean_features <- data %>% 
+    group_by(subject, activity) %>%
+    summarise_each(funs(mean))
+
+write.table(mean_features, file = "data/mean_features_wide.txt", row.names = FALSE)
 
 # Convert the "wide form" to a long form
 ## Re-tidy the dataset by gathering the columnar features into a single column called feature
 ## and the values into a measurement column.
 ## The long form is generally easier to perform analysis on
-library(tidyr)
-
-tidy <- data %>% gather(feature, measurement, -subject, -dataset, -activity)
+tidy <- data %>% gather(feature, measurement, -subject, -activity)
 tidy <- tidy %>% separate(feature, c("feature", "estimate", "axis"), extra = "drop")
 tidy <- tidy %>% 
     ### Extract elements of feature column into separate columns
@@ -95,9 +96,9 @@ tidy <- tidy %>%
 
 ## Get the mean of each measurement
 mean_features <- tidy %>% 
-    group_by(subject, dataset, activity, estimate, axis, source, device, domain, is_jerk, is_magnitude) %>%
+    group_by(subject, activity, estimate, axis, source, device, domain, is_jerk, is_magnitude) %>%
     summarize(
         mean = mean(measurement)
     )
 
-write.table(mean_features, file = "data/mean_features.txt", row.names = FALSE)
+write.table(mean_features, file = "data/mean_features_long_bonus.txt", row.names = FALSE)
