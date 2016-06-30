@@ -1,9 +1,17 @@
 library(dplyr)
 
 # Download and extract the data
-dir.create("data")
-download.file("https://d396qusza40orc.cloudfront.net/getdata%2Fprojectfiles%2FUCI%20HAR%20Dataset.zip", "data/Assignment.zip", mode="wb")
-unzip("data/Assignment.zip", exdir = "data")
+
+if(!dir.exists("data")){
+    dir.create("data")
+}
+
+dataZipFile <- "data/Assignment.zip"
+
+if(!file.exists(dataZipFile)){
+    download.file("https://d396qusza40orc.cloudfront.net/getdata%2Fprojectfiles%2FUCI%20HAR%20Dataset.zip", "data/Assignment.zip", mode="wb")
+    unzip("data/Assignment.zip", exdir = "data")
+}
 
 # Load the features and labels
 features <- read.table("data/UCI HAR Dataset/features.txt") %>% tbl_df
@@ -61,9 +69,14 @@ train <- cbind(subject_train, y_train, x_train) %>% tbl_df
 # Join the datasets
 data <- rbind(test, train)
 
+# Calculate the mean for the "wide form" data, this matches the
+## assignment details
 
-# Tidy the dataset, by gathering the columnar features into a single column called feature
-## and the values into a measurement column
+
+# Convert the "wide form" to a long form
+## Re-tidy the dataset by gathering the columnar features into a single column called feature
+## and the values into a measurement column.
+## The long form is generally easier to perform analysis on
 library(tidyr)
 
 tidy <- data %>% gather(feature, measurement, -subject, -dataset, -activity)
