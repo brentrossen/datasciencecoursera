@@ -8,7 +8,7 @@ This original data was cleaned in this project. The following steps were taken.
 
 1. The test and training datasets were merged back into a single dataset. 
 2. The mean and standard deviation measurements were extracted. 
-3. The descriptived activity names from activity_labels.txt were mapped onto the appropriate index values. 
+3. The descriptive activity names from activity_labels.txt were mapped onto the appropriate index values. 
 4. The feature names from features.txt were mapped to the appropriate feature columns. 
 5. From the dataset created in steps 1-4, a second tidy dataset was derived containing the average of each variable for each activity and each subject.
 

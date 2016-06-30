@@ -6,7 +6,7 @@ The project contains the run_analysis.R file. This file will download the data, 
 
 The analysis uses dplyr and tidyr to wrangle the data from a messy format into a tidy format. Each action is commented in the .R file so the code can be read easily.
 
-The contents of this repo satisfy all 5 requirements laid out in the project instructions (included for reference in the next section).
+The contents of this repo satisfy all 5 requirements laid out in the project instructions (included for reference in the last section).
 
 1. The test and training datasets are merged into a single dataset.
 2. The mean and standard deviation measurements are extracted.
